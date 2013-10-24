@@ -11,35 +11,29 @@
 %global pecl_name  json
 %global proj_name  jsonc
 
+%define real_name php-pecl-jsonc
+%define php_base php55u
+#%global ext_name     json
+
 %if "%{php_version}" > "5.5"
 %global ext_name     json
 %else
 %global ext_name     jsonc
 %endif
 
-%if 0%{?fedora} < 19
-%global with_libjson 0
-%else
-%global with_libjson 1
-%endif
-
-
 Summary:       Support for JSON serialization
-Name:          php-pecl-%{proj_name}
+Name:          %{php_base}-pecl-%{proj_name}
 Version:       1.3.2
-Release:       2%{?dist}
+Release:       3.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
 URL:           http://pecl.php.net/package/%{proj_name}
 Source0:       http://pecl.php.net/get/%{proj_name}-%{version}.tgz
 
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: php-devel >= 5.4
-BuildRequires: php-pear
+BuildRequires: %{php_base}-devel
+BuildRequires: %{php_base}-pear
 BuildRequires: pcre-devel
-%if %{with_libjson}
-BuildRequires: json-c-devel >= 0.11
-%endif
 
 # partial fix to decode string with null-byte (only in value)
 # https://github.com/remicollet/pecl-json-c/issues/7
@@ -60,11 +54,16 @@ Obsoletes:     php-pecl-json < 1.3.1-2
 Provides:      php-pecl-json = %{version}-%{release}
 Provides:      php-pecl-json%{?_isa} = %{version}-%{release}
 
-# Other third party repo stuff
-Obsoletes:     php54-pecl-%{proj_name}
-%if "%{php_version}" > "5.5"
-Obsoletes:     php55-pecl-%{proj_name}
-%endif
+
+
+Provides:      %{php_base}-%{pecl_name} = %{version}
+Provides:      %{php_base}-%{pecl_name}%{?_isa} = %{version}
+Provides:      %{php_base}-pecl(%{pecl_name}) = %{version}
+Provides:      %{php_base}-pecl(%{pecl_name})%{?_isa} = %{version}
+Provides:      %{php_base}-pecl(%{proj_name}) = %{version}
+Provides:      %{php_base}-pecl(%{proj_name})%{?_isa} = %{version}
+Provides:      %{php_base}-pecl-json = %{version}-%{release}
+Provides:      %{php_base}-pecl-json%{?_isa} = %{version}-%{release}
 
 # Filter private shared
 %{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
@@ -83,25 +82,13 @@ use the json-c library parser.
 Summary:       JSON developer files (header)
 Group:         Development/Libraries
 Requires:      %{name}%{?_isa} = %{version}-%{release}
-Requires:      php-devel%{?_isa}
+Requires:      %{php_base}-devel%{?_isa}
 
 %description devel
 These are the files needed to compile programs using JSON serializer.
 
-%if 0%{?rhel} == 5 && "%{php_version}" > "5.5"
-%package -n php-json
-Summary:       Meta package fo json extension
-Group:         Development/Libraries
-Requires:      %{name}%{?_isa} = %{version}-%{release}
-
-%description  -n php-json
-Meta package fo json extension.
-Only used to be the best provider for php-json.
-%endif
-
-
 %prep
-%setup -q -c 
+%setup -q -c
 cd %{proj_name}-%{version}
 
 %patch0 -p1
@@ -116,6 +103,7 @@ cd ..
 
 cat << 'EOF' | tee %{ext_name}.ini
 ; Enable %{ext_name} extension module
+echo %{ext_name}
 %if "%{ext_name}" == "json"
 extension = %{pecl_name}.so
 %else
@@ -132,24 +120,14 @@ cp -pr %{proj_name}-%{version} %{proj_name}-zts
 cd %{proj_name}-%{version}
 %{_bindir}/phpize
 %configure \
-%if %{with_libjson}
-  --with-libjson \
-%endif
-%if "%{ext_name}" == "jsonc"
   --with-jsonc \
-%endif
   --with-php-config=%{_bindir}/php-config
 make %{?_smp_mflags}
 
 cd ../%{proj_name}-zts
 %{_bindir}/zts-phpize
 %configure \
-%if %{with_libjson}
-  --with-libjson \
-%endif
-%if "%{ext_name}" == "jsonc"
   --with-jsonc \
-%endif
   --with-php-config=%{_bindir}/zts-php-config
 make %{?_smp_mflags}
 
@@ -168,6 +146,10 @@ install -D -m 644 %{ext_name}.ini %{buildroot}%{php_ztsinidir}/%{ext_name}.ini
 
 # Install the package XML file
 install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
+
+mv %{buildroot}%{_libdir}/php/modules/jsonc.so %{buildroot}%{_libdir}/php/modules/json.so
+mv %{buildroot}%{_libdir}/php-zts/modules/jsonc.so %{buildroot}%{_libdir}/php-zts/modules/json.so
+
 
 %check
 cd %{proj_name}-%{version}
@@ -216,15 +198,11 @@ rm -rf %{buildroot}
 %{php_incldir}/ext/json
 %{php_ztsincldir}/ext/json
 
-%if 0%{?rhel} == 5 && "%{php_version}" > "5.5"
-%files -n php-json
-%defattr(-,root,root,-)
-%endif
 
-#
-# Note to remi : remember to always build in remi-test first
-#
 %changelog
+* Thu Oct 24 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.2-3.ius
+- porting from php-pecl-jsonc-1.3.2-2.fc19.src.rpm
+
 * Thu Sep 26 2013 Remi Collet <rcollet@redhat.com> - 1.3.2-2
 - fix decode of string value with null-byte
 
