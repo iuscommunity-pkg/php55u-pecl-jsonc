@@ -13,7 +13,6 @@
 
 %define real_name php-pecl-jsonc
 %define php_base php55u
-#%global ext_name     json
 
 %if "%{php_version}" > "5.5"
 %global ext_name     json
@@ -24,7 +23,7 @@
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
 Version:       1.3.2
-Release:       3.ius%{?dist}
+Release:       4.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
 URL:           http://pecl.php.net/package/%{proj_name}
@@ -103,7 +102,6 @@ cd ..
 
 cat << 'EOF' | tee %{ext_name}.ini
 ; Enable %{ext_name} extension module
-echo %{ext_name}
 %if "%{ext_name}" == "json"
 extension = %{pecl_name}.so
 %else
@@ -120,14 +118,12 @@ cp -pr %{proj_name}-%{version} %{proj_name}-zts
 cd %{proj_name}-%{version}
 %{_bindir}/phpize
 %configure \
-  --with-jsonc \
   --with-php-config=%{_bindir}/php-config
 make %{?_smp_mflags}
 
 cd ../%{proj_name}-zts
 %{_bindir}/zts-phpize
 %configure \
-  --with-jsonc \
   --with-php-config=%{_bindir}/zts-php-config
 make %{?_smp_mflags}
 
@@ -147,8 +143,8 @@ install -D -m 644 %{ext_name}.ini %{buildroot}%{php_ztsinidir}/%{ext_name}.ini
 # Install the package XML file
 install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
-mv %{buildroot}%{_libdir}/php/modules/jsonc.so %{buildroot}%{_libdir}/php/modules/json.so
-mv %{buildroot}%{_libdir}/php-zts/modules/jsonc.so %{buildroot}%{_libdir}/php-zts/modules/json.so
+#mv %{buildroot}%{_libdir}/php/modules/jsonc.so %{buildroot}%{_libdir}/php/modules/json.so
+#mv %{buildroot}%{_libdir}/php-zts/modules/jsonc.so %{buildroot}%{_libdir}/php-zts/modules/json.so
 
 
 %check
@@ -200,6 +196,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 19 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.2-4.ius
+- removing --with-jsonc, see LP bug 1252833
+
 * Thu Oct 24 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.2-3.ius
 - porting from php-pecl-jsonc-1.3.2-2.fc19.src.rpm
 
