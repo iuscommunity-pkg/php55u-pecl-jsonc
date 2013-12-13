@@ -22,8 +22,8 @@
 
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
-Version:       1.3.2
-Release:       4.ius%{?dist}
+Version:       1.3.3
+Release:       1.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
 URL:           http://pecl.php.net/package/%{proj_name}
@@ -196,6 +196,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Dec 13 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.3-1.ius
+- Latest sources from upstream
+
 * Tue Nov 19 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.2-4.ius
 - removing --with-jsonc, see LP bug 1252833
 
