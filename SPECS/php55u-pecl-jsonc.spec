@@ -90,7 +90,7 @@ These are the files needed to compile programs using JSON serializer.
 %setup -q -c
 cd %{proj_name}-%{version}
 
-%patch0 -p1
+#%patch0 -p1
 
 # Sanity check, really often broken
 extver=$(sed -n '/#define PHP_JSON_VERSION/{s/.* "//;s/".*$//;p}' php_json.h )
@@ -198,6 +198,7 @@ rm -rf %{buildroot}
 %changelog
 * Fri Dec 13 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.3-1.ius
 - Latest sources from upstream
+- diable patch0, patched upstream
 
 * Tue Nov 19 2013 Ben Harper <ben.harper@rackspace.com> - 1.3.2-4.ius
 - removing --with-jsonc, see LP bug 1252833
