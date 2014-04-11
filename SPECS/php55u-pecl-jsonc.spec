@@ -22,7 +22,7 @@
 
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
-Version:       1.3.4
+Version:       1.3.5
 Release:       1.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
@@ -196,6 +196,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Apr 11 2014 Ben Harper <ben.harper@rackspace.com> - 1.3.5-1.ius
+- Latest sources from upstream
+
 * Tue Feb 25 2014 Ben Harper <ben.harper@rackspace.com> - 1.3.4-1.ius
 - Latest sources from upstream
 
