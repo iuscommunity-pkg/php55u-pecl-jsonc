@@ -22,7 +22,7 @@
 
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
-Version:       1.3.5
+Version:       1.3.6
 Release:       1.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
@@ -83,8 +83,10 @@ Group:         Development/Libraries
 Requires:      %{name}%{?_isa} = %{version}-%{release}
 Requires:      %{php_base}-devel%{?_isa}
 
+
 %description devel
 These are the files needed to compile programs using JSON serializer.
+
 
 %prep
 %setup -q -c
@@ -196,6 +198,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug 01 2014 Carl George <carl.george@rackspace.com> - 1.3.6-1.ius
+- Latest sources from upstream
+
 * Fri Apr 11 2014 Ben Harper <ben.harper@rackspace.com> - 1.3.5-1.ius
 - Latest sources from upstream
 
