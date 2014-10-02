@@ -29,7 +29,6 @@ Group:         Development/Languages
 URL:           http://pecl.php.net/package/%{proj_name}
 Source0:       http://pecl.php.net/get/%{proj_name}-%{version}.tgz
 
-BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: %{php_base}-devel
 BuildRequires: %{php_base}-pear
 BuildRequires: pcre-devel
@@ -131,7 +130,6 @@ make %{?_smp_mflags}
 
 
 %install
-rm -rf %{buildroot}
 # Install the NTS stuff
 make -C %{proj_name}-%{version} \
      install INSTALL_ROOT=%{buildroot}
@@ -177,12 +175,7 @@ if [ $1 -eq 0 ] ; then
 fi
 
 
-%clean
-rm -rf %{buildroot}
-
-
 %files
-%defattr(-,root,root,-)
 %doc %{proj_name}-%{version}%{?prever}/{LICENSE,CREDITS,README.md}
 %config(noreplace) %{php_inidir}/%{ext_name}.ini
 %config(noreplace) %{php_ztsinidir}/%{ext_name}.ini
@@ -192,7 +185,6 @@ rm -rf %{buildroot}
 
 
 %files devel
-%defattr(-,root,root,-)
 %{php_incldir}/ext/json
 %{php_ztsincldir}/ext/json
 
