@@ -10,15 +10,11 @@
 
 %global pecl_name  json
 %global proj_name  jsonc
+%global ini_name   40-%{pecl_name}.ini
 
 %define real_name php-pecl-jsonc
 %define php_base php55u
 
-%if "%{php_version}" > "5.5"
-%global ext_name     json
-%else
-%global ext_name     jsonc
-%endif
 
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
@@ -93,14 +89,9 @@ if test "x${extver}" != "x%{version}%{?prever:-%{prever}}"; then
 fi
 cd ..
 
-cat << 'EOF' | tee %{ext_name}.ini
-; Enable %{ext_name} extension module
-%if "%{ext_name}" == "json"
+cat << 'EOF' | tee %{ini_name}
+; Enable %{pecl_name} extension module
 extension = %{pecl_name}.so
-%else
-; You must disable standard %{pecl_name}.so before you enable %{proj_name}.so
-;extension = %{proj_name}.so
-%endif
 EOF
 
 # duplicate for ZTS build
@@ -125,12 +116,12 @@ make %{?_smp_mflags}
 # Install the NTS stuff
 make -C %{proj_name}-%{version} \
      install INSTALL_ROOT=%{buildroot}
-install -D -m 644 %{ext_name}.ini %{buildroot}%{php_inidir}/%{ext_name}.ini
+install -D -m 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
 # Install the ZTS stuff
 make -C %{proj_name}-zts \
      install INSTALL_ROOT=%{buildroot}
-install -D -m 644 %{ext_name}.ini %{buildroot}%{php_ztsinidir}/%{ext_name}.ini
+install -D -m 644 %{ini_name} %{buildroot}%{php_ztsinidir}/%{ini_name}
 
 # Install the package XML file
 install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
@@ -143,7 +134,7 @@ install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 cd %{proj_name}-%{version}
 
 TEST_PHP_EXECUTABLE=%{_bindir}/php \
-TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{ext_name}.so" \
+TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{pecl_name}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
 %{_bindir}/php -n run-tests.php
@@ -151,7 +142,7 @@ REPORT_EXIT_STATUS=1 \
 cd ../%{proj_name}-zts
 
 TEST_PHP_EXECUTABLE=%{__ztsphp} \
-TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{ext_name}.so" \
+TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{pecl_name}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
 %{__ztsphp} -n run-tests.php
@@ -169,10 +160,10 @@ fi
 
 %files
 %doc %{proj_name}-%{version}%{?prever}/{LICENSE,CREDITS,README.md}
-%config(noreplace) %{php_inidir}/%{ext_name}.ini
-%config(noreplace) %{php_ztsinidir}/%{ext_name}.ini
-%{php_extdir}/%{ext_name}.so
-%{php_ztsextdir}/%{ext_name}.so
+%config(noreplace) %{php_inidir}/%{ini_name}
+%config(noreplace) %{php_ztsinidir}/%{ini_name}
+%{php_extdir}/%{pecl_name}.so
+%{php_ztsextdir}/%{pecl_name}.so
 %{pecl_xmldir}/%{name}.xml
 
 
