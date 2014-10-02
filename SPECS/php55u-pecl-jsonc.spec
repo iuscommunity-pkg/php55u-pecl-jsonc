@@ -126,8 +126,13 @@ install -D -m 644 %{ini_name} %{buildroot}%{php_ztsinidir}/%{ini_name}
 # Install the package XML file
 install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
-#mv %{buildroot}%{_libdir}/php/modules/jsonc.so %{buildroot}%{_libdir}/php/modules/json.so
-#mv %{buildroot}%{_libdir}/php-zts/modules/jsonc.so %{buildroot}%{_libdir}/php-zts/modules/json.so
+# Test & Documentation
+for i in $(grep 'role="test"' package.xml | sed -e 's/^.*name="//;s/".*$//')
+do install -Dpm 644 %{proj_name}-%{version}/$i %{buildroot}%{pecl_testdir}/%{pecl_name}/$i
+done
+for i in $(grep 'role="doc"' package.xml | sed -e 's/^.*name="//;s/".*$//')
+do install -Dpm 644 %{proj_name}-%{version}/$i %{buildroot}%{pecl_docdir}/%{pecl_name}/$i
+done
 
 
 %check
@@ -159,7 +164,7 @@ fi
 
 
 %files
-%doc %{proj_name}-%{version}%{?prever}/{LICENSE,CREDITS,README.md}
+%doc %{pecl_docdir}/%{pecl_name}
 %config(noreplace) %{php_inidir}/%{ini_name}
 %config(noreplace) %{php_ztsinidir}/%{ini_name}
 %{php_extdir}/%{pecl_name}.so
@@ -170,6 +175,7 @@ fi
 %files devel
 %{php_incldir}/ext/json
 %{php_ztsincldir}/ext/json
+%doc %{pecl_testdir}/%{pecl_name}
 
 
 %changelog
