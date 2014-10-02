@@ -33,10 +33,6 @@ BuildRequires: %{php_base}-devel
 BuildRequires: %{php_base}-pear
 BuildRequires: pcre-devel
 
-# partial fix to decode string with null-byte (only in value)
-# https://github.com/remicollet/pecl-json-c/issues/7
-Patch0:        jsonc-nullbyte.patch
-
 Requires(post): %{__pecl}
 Requires(postun): %{__pecl}
 Requires:      php(zend-abi) = %{php_zend_api}
@@ -51,8 +47,6 @@ Provides:      php-pecl(%{proj_name})%{?_isa} = %{version}
 Obsoletes:     php-pecl-json < 1.3.1-2
 Provides:      php-pecl-json = %{version}-%{release}
 Provides:      php-pecl-json%{?_isa} = %{version}-%{release}
-
-
 
 Provides:      %{php_base}-%{pecl_name} = %{version}
 Provides:      %{php_base}-%{pecl_name}%{?_isa} = %{version}
@@ -90,8 +84,6 @@ These are the files needed to compile programs using JSON serializer.
 %prep
 %setup -q -c
 cd %{proj_name}-%{version}
-
-#%patch0 -p1
 
 # Sanity check, really often broken
 extver=$(sed -n '/#define PHP_JSON_VERSION/{s/.* "//;s/".*$//;p}' php_json.h )
