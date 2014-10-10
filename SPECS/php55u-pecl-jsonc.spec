@@ -29,8 +29,8 @@ BuildRequires: %{php_base}-devel
 BuildRequires: %{php_base}-pear
 BuildRequires: pcre-devel
 
-Requires(post): %{__pecl}
-Requires(postun): %{__pecl}
+Requires(post): %{php_base}-pear
+Requires(postun): %{php_base}-pear
 Requires:      php(zend-abi) = %{php_zend_api}
 Requires:      php(api) = %{php_core_api}
 
