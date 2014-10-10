@@ -36,22 +36,31 @@ Requires:      php(api) = %{php_core_api}
 
 Provides:      php-%{pecl_name} = %{version}
 Provides:      php-%{pecl_name}%{?_isa} = %{version}
+Provides:      php-%{proj_name} = %{version}
+Provides:      php-%{proj_name}%{?_isa} = %{version}
 Provides:      php-pecl(%{pecl_name}) = %{version}
 Provides:      php-pecl(%{pecl_name})%{?_isa} = %{version}
 Provides:      php-pecl(%{proj_name}) = %{version}
 Provides:      php-pecl(%{proj_name})%{?_isa} = %{version}
-Obsoletes:     php-pecl-json < 1.3.1-2
-Provides:      php-pecl-json = %{version}-%{release}
-Provides:      php-pecl-json%{?_isa} = %{version}-%{release}
+Provides:      php-pecl-%{pecl_name} = %{version}
+Provides:      php-pecl-%{pecl_name}%{?_isa} = %{version}
+Provides:      php-pecl-%{proj_name} = %{version}
+Provides:      php-pecl-%{proj_name}%{?_isa} = %{version}
 
 Provides:      %{php_base}-%{pecl_name} = %{version}
 Provides:      %{php_base}-%{pecl_name}%{?_isa} = %{version}
+Provides:      %{php_base}-%{proj_name} = %{version}
+Provides:      %{php_base}-%{proj_name}%{?_isa} = %{version}
 Provides:      %{php_base}-pecl(%{pecl_name}) = %{version}
 Provides:      %{php_base}-pecl(%{pecl_name})%{?_isa} = %{version}
 Provides:      %{php_base}-pecl(%{proj_name}) = %{version}
 Provides:      %{php_base}-pecl(%{proj_name})%{?_isa} = %{version}
-Provides:      %{php_base}-pecl-json = %{version}-%{release}
-Provides:      %{php_base}-pecl-json%{?_isa} = %{version}-%{release}
+Provides:      %{php_base}-pecl-%{pecl_name} = %{version}
+Provides:      %{php_base}-pecl-%{pecl_name}%{?_isa} = %{version}
+Provides:      %{php_base}-pecl-%{proj_name} = %{version}
+Provides:      %{php_base}-pecl-%{proj_name}%{?_isa} = %{version}
+
+Conflicts:     %{real_name} < %{version}
 
 # Filter private shared
 %{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
