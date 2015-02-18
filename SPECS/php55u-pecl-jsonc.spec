@@ -18,8 +18,8 @@
 
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
-Version:       1.3.6
-Release:       3.ius%{?dist}
+Version:       1.3.7
+Release:       1.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
 URL:           http://pecl.php.net/package/%{proj_name}
@@ -188,6 +188,9 @@ fi
 
 
 %changelog
+* Wed Feb 18 2015 Carl George <carl.george@rackspace.com> - 1.3.7-1.ius
+- Latest upstream
+
 * Fri Oct 10 2014 Carl George <carl.george@rackspace.com> - 1.3.6-2.ius
 - Conflict with stock package
 - Use same provides as stock package
