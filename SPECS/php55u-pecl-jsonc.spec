@@ -13,6 +13,7 @@
 %global pecl_name  json
 %global proj_name  jsonc
 %global ini_name   40-%{pecl_name}.ini
+%global with_zts 0%{?__ztsphp:1}
 
 %define php_base php55u
 
@@ -98,7 +99,9 @@ These are the files needed to compile programs using JSON serializer.
 
 %prep
 %setup -q -c
-cd %{proj_name}-%{version}
+mv %{proj_name}-%{version} NTS
+
+pushd NTS
 
 # Sanity check, really often broken
 extver=$(sed -n '/#define PHP_JSON_VERSION/{s/.* "//;s/".*$//;p}' php_json.h )
@@ -106,70 +109,78 @@ if test "x${extver}" != "x%{version}%{?prever:-%{prever}}"; then
    : Error: Upstream extension version is ${extver}, expecting %{version}%{?prever:-%{prever}}.
    exit 1
 fi
-cd ..
+popd
 
 cat << 'EOF' | tee %{ini_name}
 ; Enable %{pecl_name} extension module
 extension = %{pecl_name}.so
 EOF
 
+%if %{with_zts}
 # duplicate for ZTS build
-cp -pr %{proj_name}-%{version} %{proj_name}-zts
+cp -pr NTS ZTS
+%endif
 
 
 %build
-cd %{proj_name}-%{version}
+pushd NTS
 %{_bindir}/phpize
 %configure \
   --with-php-config=%{_bindir}/php-config
 make %{?_smp_mflags}
+popd
 
-cd ../%{proj_name}-zts
+%if %{with_zts}
+pushd ZTS
 %{_bindir}/zts-phpize
 %configure \
   --with-php-config=%{_bindir}/zts-php-config
 make %{?_smp_mflags}
+popd
+%endif
 
 
 %install
 # Install the NTS stuff
-make -C %{proj_name}-%{version} \
-     install INSTALL_ROOT=%{buildroot}
+make -C NTS install INSTALL_ROOT=%{buildroot}
 install -D -m 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
 
+%if %{with_zts}
 # Install the ZTS stuff
-make -C %{proj_name}-zts \
-     install INSTALL_ROOT=%{buildroot}
+make -C ZTS install INSTALL_ROOT=%{buildroot}
 install -D -m 644 %{ini_name} %{buildroot}%{php_ztsinidir}/%{ini_name}
+%endif
 
 # Install the package XML file
 install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
 
 # Test & Documentation
 for i in $(grep 'role="test"' package.xml | sed -e 's/^.*name="//;s/".*$//')
-do install -Dpm 644 %{proj_name}-%{version}/$i %{buildroot}%{pecl_testdir}/%{pecl_name}/$i
+do install -Dpm 644 NTS/$i %{buildroot}%{pecl_testdir}/%{pecl_name}/$i
 done
 for i in $(grep 'role="doc"' package.xml | sed -e 's/^.*name="//;s/".*$//')
-do install -Dpm 644 %{proj_name}-%{version}/$i %{buildroot}%{pecl_docdir}/%{pecl_name}/$i
+do install -Dpm 644 NTS/$i %{buildroot}%{pecl_docdir}/%{pecl_name}/$i
 done
 
 
 %check
-cd %{proj_name}-%{version}
-
+pushd NTS
 TEST_PHP_EXECUTABLE=%{_bindir}/php \
 TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{pecl_name}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
 %{_bindir}/php -n run-tests.php
+popd
 
-cd ../%{proj_name}-zts
-
+%if %{with_zts}
+pushd ZTS
 TEST_PHP_EXECUTABLE=%{__ztsphp} \
 TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{pecl_name}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
 %{__ztsphp} -n run-tests.php
+popd
+%endif
 
 
 %post
@@ -185,15 +196,19 @@ fi
 %files
 %doc %{pecl_docdir}/%{pecl_name}
 %config(noreplace) %{php_inidir}/%{ini_name}
-%config(noreplace) %{php_ztsinidir}/%{ini_name}
 %{php_extdir}/%{pecl_name}.so
+%if %{with_zts}
+%config(noreplace) %{php_ztsinidir}/%{ini_name}
 %{php_ztsextdir}/%{pecl_name}.so
+%endif
 %{pecl_xmldir}/%{name}.xml
 
 
 %files devel
 %{php_incldir}/ext/json
+%if %{with_zts}
 %{php_ztsincldir}/ext/json
+%endif
 %doc %{pecl_testdir}/%{pecl_name}
 
 
@@ -202,6 +217,7 @@ fi
 - Clean up provides
 - Clean up conflicts
 - Clean up filters
+- ZTS cleanup
 
 * Tue Sep 15 2015 Carl George <carl.george@rackspace.com> - 1.3.9-1.ius
 - Latest upstream
