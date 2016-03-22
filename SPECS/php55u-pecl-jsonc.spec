@@ -152,7 +152,7 @@ install -D -m 644 %{ini_name} %{buildroot}%{php_ztsinidir}/%{ini_name}
 %endif
 
 # Install the package XML file
-install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
+install -D -m 644 package.xml %{buildroot}%{pecl_xmldir}/%{proj_name}.xml
 
 # Test & Documentation
 for i in $(grep 'role="test"' package.xml | sed -e 's/^.*name="//;s/".*$//')
@@ -184,7 +184,7 @@ popd
 
 
 %post
-%{pecl_install} %{pecl_xmldir}/%{name}.xml >/dev/null || :
+%{pecl_install} %{pecl_xmldir}/%{proj_name}.xml >/dev/null || :
 
 
 %postun
@@ -201,7 +201,7 @@ fi
 %config(noreplace) %{php_ztsinidir}/%{ini_name}
 %{php_ztsextdir}/%{pecl_name}.so
 %endif
-%{pecl_xmldir}/%{name}.xml
+%{pecl_xmldir}/%{proj_name}.xml
 
 
 %files devel
@@ -218,6 +218,7 @@ fi
 - Clean up conflicts
 - Clean up filters
 - ZTS cleanup
+- Install package.xml as jsonc.xml, not %%{name}.xml
 
 * Tue Sep 15 2015 Carl George <carl.george@rackspace.com> - 1.3.9-1.ius
 - Latest upstream
