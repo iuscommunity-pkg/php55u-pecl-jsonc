@@ -21,7 +21,7 @@
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
 Version:       1.3.9
-Release:       1.ius%{?dist}
+Release:       2.ius%{?dist}
 License:       PHP
 Group:         Development/Languages
 URL:           http://pecl.php.net/package/%{proj_name}
@@ -36,31 +36,33 @@ Requires(postun): %{php_base}-pear
 Requires:      php(zend-abi) = %{php_zend_api}
 Requires:      php(api) = %{php_core_api}
 
+# provide the stock names
+Provides:      php-pecl-%{proj_name} = %{version}
+Provides:      php-pecl-%{proj_name}%{?_isa} = %{version}
+Provides:      php-pecl-%{pecl_name} = %{version}
+Provides:      php-pecl-%{pecl_name}%{?_isa} = %{version}
+Provides:      %{php_base}-pecl-%{pecl_name} = %{version}
+Provides:      %{php_base}-pecl-%{pecl_name}%{?_isa} = %{version}
+
+# provide the stock and IUS names without pecl
 Provides:      php-%{pecl_name} = %{version}
 Provides:      php-%{pecl_name}%{?_isa} = %{version}
 Provides:      php-%{proj_name} = %{version}
 Provides:      php-%{proj_name}%{?_isa} = %{version}
-Provides:      php-pecl(%{pecl_name}) = %{version}
-Provides:      php-pecl(%{pecl_name})%{?_isa} = %{version}
-Provides:      php-pecl(%{proj_name}) = %{version}
-Provides:      php-pecl(%{proj_name})%{?_isa} = %{version}
-Provides:      php-pecl-%{pecl_name} = %{version}
-Provides:      php-pecl-%{pecl_name}%{?_isa} = %{version}
-Provides:      php-pecl-%{proj_name} = %{version}
-Provides:      php-pecl-%{proj_name}%{?_isa} = %{version}
-
 Provides:      %{php_base}-%{pecl_name} = %{version}
 Provides:      %{php_base}-%{pecl_name}%{?_isa} = %{version}
 Provides:      %{php_base}-%{proj_name} = %{version}
 Provides:      %{php_base}-%{proj_name}%{?_isa} = %{version}
+
+# provide the stock and IUS names in pecl() format
+Provides:      php-pecl(%{pecl_name}) = %{version}
+Provides:      php-pecl(%{pecl_name})%{?_isa} = %{version}
+Provides:      php-pecl(%{proj_name}) = %{version}
+Provides:      php-pecl(%{proj_name})%{?_isa} = %{version}
 Provides:      %{php_base}-pecl(%{pecl_name}) = %{version}
 Provides:      %{php_base}-pecl(%{pecl_name})%{?_isa} = %{version}
 Provides:      %{php_base}-pecl(%{proj_name}) = %{version}
 Provides:      %{php_base}-pecl(%{proj_name})%{?_isa} = %{version}
-Provides:      %{php_base}-pecl-%{pecl_name} = %{version}
-Provides:      %{php_base}-pecl-%{pecl_name}%{?_isa} = %{version}
-Provides:      %{php_base}-pecl-%{proj_name} = %{version}
-Provides:      %{php_base}-pecl-%{proj_name}%{?_isa} = %{version}
 
 Conflicts:     %{real_name} < %{version}
 
@@ -82,6 +84,9 @@ Summary:       JSON developer files (header)
 Group:         Development/Libraries
 Requires:      %{name}%{?_isa} = %{version}-%{release}
 Requires:      %{php_base}-devel%{?_isa}
+
+Provides:      php-pecl-%{proj_name}-devel = %{version}
+Provides:      php-pecl-%{proj_name}-devel%{?_isa} = %{version}
 
 
 %description devel
@@ -190,6 +195,9 @@ fi
 
 
 %changelog
+* Tue Mar 22 2016 Carl George <carl.george@rackspace.com> - 1.3.9-2.ius
+- Clean up provides
+
 * Tue Sep 15 2015 Carl George <carl.george@rackspace.com> - 1.3.9-1.ius
 - Latest upstream
 
