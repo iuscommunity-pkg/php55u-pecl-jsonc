@@ -1,3 +1,5 @@
+# IUS spec file for php56u-pecl-jsonc, forked from:
+#
 # spec file for php-pecl-jsonc
 #
 # Copyright (c) 2013 Remi Collet
