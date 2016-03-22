@@ -14,7 +14,6 @@
 %global proj_name  jsonc
 %global ini_name   40-%{pecl_name}.ini
 
-%define real_name php-pecl-jsonc
 %define php_base php55u
 
 
@@ -64,7 +63,8 @@ Provides:      %{php_base}-pecl(%{pecl_name})%{?_isa} = %{version}
 Provides:      %{php_base}-pecl(%{proj_name}) = %{version}
 Provides:      %{php_base}-pecl(%{proj_name})%{?_isa} = %{version}
 
-Conflicts:     %{real_name} < %{version}
+# conflict with the stock name
+Conflicts:     php-pecl-%{proj_name} < %{version}
 
 # Filter private shared
 %{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
@@ -87,6 +87,7 @@ Requires:      %{php_base}-devel%{?_isa}
 
 Provides:      php-pecl-%{proj_name}-devel = %{version}
 Provides:      php-pecl-%{proj_name}-devel%{?_isa} = %{version}
+Conflicts:     php-pecl-%{proj_name}-devel < %{version}
 
 
 %description devel
@@ -197,6 +198,7 @@ fi
 %changelog
 * Tue Mar 22 2016 Carl George <carl.george@rackspace.com> - 1.3.9-2.ius
 - Clean up provides
+- Clean up conflicts
 
 * Tue Sep 15 2015 Carl George <carl.george@rackspace.com> - 1.3.9-1.ius
 - Latest upstream
