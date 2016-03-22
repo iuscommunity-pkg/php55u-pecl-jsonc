@@ -66,9 +66,11 @@ Provides:      %{php_base}-pecl(%{proj_name})%{?_isa} = %{version}
 # conflict with the stock name
 Conflicts:     php-pecl-%{proj_name} < %{version}
 
-# Filter private shared
-%{?filter_provides_in: %filter_provides_in %{_libdir}/.*\.so$}
+# RPM 4.8
+%{?filter_provides_in: %filter_provides_in %{php_extdir}/.*\.so$}
 %{?filter_setup}
+# RPM 4.9
+%global __provides_exclude_from %{?__provides_exclude_from:%__provides_exclude_from|}%{php_extdir}/.*\\.so$
 
 
 %description
@@ -199,6 +201,7 @@ fi
 * Tue Mar 22 2016 Carl George <carl.george@rackspace.com> - 1.3.9-2.ius
 - Clean up provides
 - Clean up conflicts
+- Clean up filters
 
 * Tue Sep 15 2015 Carl George <carl.george@rackspace.com> - 1.3.9-1.ius
 - Latest upstream
