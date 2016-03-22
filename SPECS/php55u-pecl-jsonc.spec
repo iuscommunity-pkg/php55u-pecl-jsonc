@@ -8,7 +8,6 @@
 #
 # Please, preserve the changelog entries
 #
-%{!?__pecl:      %{expand: %%global __pecl      %{_bindir}/pecl}}
 
 %global pecl_name  json
 %global proj_name  jsonc
@@ -108,8 +107,8 @@ pushd NTS
 
 # Sanity check, really often broken
 extver=$(sed -n '/#define PHP_JSON_VERSION/{s/.* "//;s/".*$//;p}' php_json.h )
-if test "x${extver}" != "x%{version}%{?prever:-%{prever}}"; then
-   : Error: Upstream extension version is ${extver}, expecting %{version}%{?prever:-%{prever}}.
+if test "x${extver}" != "x%{version}%{?prever:%{prever}}"; then
+   : Error: Upstream extension version is ${extver}, expecting %{version}%{?prever:%{prever}}.
    exit 1
 fi
 popd
@@ -168,11 +167,11 @@ done
 
 %check
 pushd NTS
-TEST_PHP_EXECUTABLE=%{_bindir}/php \
+TEST_PHP_EXECUTABLE=%{__php} \
 TEST_PHP_ARGS="-n -d extension_dir=$PWD/modules -d extension=%{pecl_name}.so" \
 NO_INTERACTION=1 \
 REPORT_EXIT_STATUS=1 \
-%{_bindir}/php -n run-tests.php
+%{__php} -n run-tests.php
 popd
 
 %if %{with_zts}
