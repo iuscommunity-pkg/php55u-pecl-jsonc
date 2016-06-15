@@ -1,4 +1,4 @@
-# IUS spec file for php56u-pecl-jsonc, forked from:
+# IUS spec file for php55u-pecl-jsonc, forked from:
 #
 # spec file for php-pecl-jsonc
 #
@@ -19,8 +19,8 @@
 
 Summary:       Support for JSON serialization
 Name:          %{php_base}-pecl-%{proj_name}
-Version:       1.3.9
-Release:       2.ius%{?dist}
+Version:       1.3.10
+Release:       1.ius%{?dist}
 # PHP extension is PHP
 # jsonc-c is MIT
 # json-c/linkhask.c is Public Domain
@@ -217,6 +217,9 @@ fi
 
 
 %changelog
+* Wed Jun 15 2016 Ben Harper <ben.harper@rackspace.com> - 1.3.10-1.ius
+- Latest upstream
+
 * Tue Mar 22 2016 Carl George <carl.george@rackspace.com> - 1.3.9-2.ius
 - Clean up provides
 - Clean up conflicts
